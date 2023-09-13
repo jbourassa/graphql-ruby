@@ -373,6 +373,27 @@ describe GraphQL::Schema do
       assert_kind_of NewTrace1, child_trace
       assert_kind_of GraphQL::Tracing::Trace, child_trace
     end
+
+    it "returns an instance of the mode's trace_class" do
+      trace_class_a = Class.new(GraphQL::Tracing::Trace)
+      parent_schema = Class.new(GraphQL::Schema) do
+        trace_mode :a, trace_class_a
+        trace_with NewTrace1
+        trace_with NewTrace2, mode: :a
+      end
+
+      child_schema = Class.new(parent_schema)
+
+      parent_trace_a = parent_schema.new_trace(mode: :a)
+      assert_kind_of trace_class_a, parent_trace_a
+      refute_kind_of NewTrace1, parent_trace_a
+      assert_kind_of NewTrace2, parent_trace_a
+
+      child_trace_a = child_schema.new_trace(mode: :a)
+      assert_kind_of trace_class_a, child_trace_a
+      refute_kind_of NewTrace1, child_trace_a
+      assert_kind_of NewTrace2, child_trace_a
+    end
   end
 
   describe ".possible_types" do
