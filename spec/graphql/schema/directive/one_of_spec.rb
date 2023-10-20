@@ -31,7 +31,7 @@ describe GraphQL::Schema::Directive::OneOf do
   let(:one_of_input_object) do
     Class.new(GraphQL::Schema::InputObject) do
       graphql_name "OneOfInputObject"
-      directive GraphQL::Schema::Directive::OneOf
+      one_of
 
       argument :int, GraphQL::Types::Int, required: false
       argument :string, GraphQL::Types::String, required: false
@@ -43,7 +43,7 @@ describe GraphQL::Schema::Directive::OneOf do
       let(:one_of_input_object) do
         Class.new(GraphQL::Schema::InputObject) do
           graphql_name "OneOfInputObject"
-          directive GraphQL::Schema::Directive::OneOf
+          one_of
 
           argument :int, GraphQL::Types::Int, required: true # rubocop:disable GraphQL/DefaultRequiredTrue
           argument :string, GraphQL::Types::String
@@ -61,7 +61,7 @@ describe GraphQL::Schema::Directive::OneOf do
       let(:one_of_input_object) do
         Class.new(GraphQL::Schema::InputObject) do
           graphql_name "OneOfInputObject"
-          directive GraphQL::Schema::Directive::OneOf
+          one_of
 
           argument :int, GraphQL::Types::Int, default_value: 1, required: false
           argument :string, GraphQL::Types::String, required: false

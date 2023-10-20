@@ -75,11 +75,15 @@ module GraphQL
             raise ArgumentError, "`one_of` may not be used with required arguments -- add `required: false` to argument definitions to use `one_of`"
           end
           directive(GraphQL::Schema::Directive::OneOf)
+
+          singleton_class.class_eval do
+            define_method(:one_of?) { true }
+          end
         end
       end
 
       def self.one_of?
-        directives.any? { |d| d.is_a?(GraphQL::Schema::Directive::OneOf) }
+        false
       end
 
       def unwrap_value(value)

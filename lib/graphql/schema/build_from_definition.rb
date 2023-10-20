@@ -357,6 +357,7 @@ module GraphQL
             ast_node(input_object_type_definition)
             builder.build_directives(self, input_object_type_definition, type_resolver)
             builder.build_arguments(self, input_object_type_definition.fields, type_resolver)
+            one_of if directives.any? { |directive| directive.is_a?(GraphQL::Schema::Directive::OneOf) }
           end
         end
 
