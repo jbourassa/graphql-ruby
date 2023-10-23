@@ -50,6 +50,10 @@ module GraphQLBenchmark
         x.report("parse - introspection") { GraphQL.parse(QUERY_STRING) }
         x.report("parse - fragments") { GraphQL.parse(ABSTRACT_FRAGMENTS_2_QUERY_STRING) }
         x.report("parse - big query") { GraphQL.parse(BIG_QUERY_STRING) }
+      when "input"
+        x.report("input list - 10 elem") { self.with_input_list(10) }
+        x.report("input list - 100 elem") { self.with_input_list(100) }
+        x.report("input list - 1000 elem") { self.with_input_list(1000) }
       else
         raise("Unexpected task #{task}")
       end
@@ -668,5 +672,37 @@ module GraphQLBenchmark
     Lazy           #{get_depth.call(lazy_res)}
     Very Lazy      #{get_depth.call(very_lazy_res)}
     RESULT
+  end
+
+  class SchemaWithArg < GraphQL::Schema
+    class Input1 < GraphQL::Schema::InputObject
+      argument(:int, Integer)
+    end
+
+    class Query < GraphQL::Schema::Object
+      field(:with_input_list, Integer) do |f|
+        f.argument(:list, [Input1])
+      end
+      def with_input_list(list:)
+        1
+      end
+    end
+
+    query(Query)
+  end
+
+  def self.with_input_list(list_size = 100)
+    query_str = <<-GRAPHQL
+    query($list: [Input1!]!) {
+      withInputList(list: $list)
+    }
+    GRAPHQL
+
+    SchemaWithArg.execute(
+      query_str,
+      variables: {
+        list: list_size.times.map { |i| { int: i } }
+      },
+    )
   end
 end

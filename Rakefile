@@ -96,6 +96,12 @@ namespace :bench do
     GraphQLBenchmark.run("validate")
   end
 
+  desc "Benchmark input parsing"
+  task :input do
+    prepare_benchmark
+    GraphQLBenchmark.run("input")
+  end
+
   desc "Profile a validation"
   task :validate_memory do
     prepare_benchmark
